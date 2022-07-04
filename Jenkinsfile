@@ -65,7 +65,6 @@ pipeline {
           echo "Package application"
           mvn package
           ls -la
-          ls -la /target
           '''
         }
       }
