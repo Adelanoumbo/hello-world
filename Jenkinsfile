@@ -26,7 +26,11 @@ pipeline {
     stage('Clean') {
       steps {
         container('maven') {
-          sh 'echo "Cleaning environment"'
+          sh '''
+          echo "Cleaning environment"
+          mvn clean
+          '''
+
         }
       }
     }
@@ -34,7 +38,10 @@ pipeline {
     stage('Install') {
       steps {
         container('maven') {
-          sh 'echo "Install application"'
+          sh '''
+          echo "Install application"
+          mvn install
+          '''
         }
       }
     }
@@ -42,7 +49,21 @@ pipeline {
     stage('Test') {
       steps {
         container('maven') {
-          sh 'echo "Test application"'
+          sh '''
+          echo "Test application"
+          mvn test
+          '''
+        }
+      }
+    }
+
+    stage('Package') {
+      steps {
+        container('maven') {
+          sh '''
+          echo "Package application"
+          mvn package
+          '''
         }
       }
     }
@@ -50,7 +71,7 @@ pipeline {
     stage('Deploy') {
       steps {
         container('maven') {
-          sh 'echo "Deploy to Harbor registry"'
+          sh 'echo "Deploy to kubernetes"'
         }
       }
     }
