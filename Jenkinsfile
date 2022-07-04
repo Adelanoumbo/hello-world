@@ -50,7 +50,7 @@ pipeline {
     stage('Deploy') {
       steps {
         container('maven') {
-          sh 'echo "Deploy to kubernetes"'
+          sh 'echo "Deploy to Harbor registry"'
         }
       }
     }
