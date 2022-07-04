@@ -27,6 +27,7 @@ pipeline {
       steps {
         container('maven') {
           sh '''
+          rm -rf webapp/target/webapp.war || true
           echo "Cleaning environment"
           mvn clean
           '''
