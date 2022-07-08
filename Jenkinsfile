@@ -1,5 +1,5 @@
-pipeline {
-  agent {
+pipeline{
+    agent {
     kubernetes {
       yaml '''
         apiVersion: v1
@@ -14,69 +14,22 @@ pipeline {
         '''
     }
   }
-  stages {
-    stage('Run maven') {
-      steps {
-        container('maven') {
-          sh 'mvn -version'
+    stages{
+       stage('Build'){
+            steps{
+                sh 'mvn clean package'
+            }
+         }
+        stage('SonarQube analysis') {
+//    def scannerHome = tool 'SonarScanner 4.0';
+        steps{
+        withSonarQubeEnv('sonarqube') { 
+        // If you have configured more than one global server connection, you can specify its name
+//      sh "${scannerHome}/bin/sonar-scanner"
+        sh "mvn sonar:sonar"
+          }
+         }
         }
-      }
+       
     }
-
-    stage('Clean') {
-      steps {
-        container('maven') {
-          sh '''
-          rm -rf webapp/target/webapp.war || true
-          echo "Cleaning environment"
-          mvn clean
-          '''
-
-        }
-      }
-    }
-
-    stage('Install') {
-      steps {
-        container('maven') {
-          sh '''
-          echo "Install application"
-          mvn install
-          '''
-        }
-      }
-    }
-
-    stage('Test') {
-      steps {
-        container('maven') {
-          sh '''
-          echo "Test application"
-          mvn test
-          '''
-        }
-      }
-    }
-
-    stage('Package') {
-      steps {
-        container('maven') {
-          sh '''
-          echo "Package application"
-          mvn package
-          ls -la
-          '''
-        }
-      }
-    }
-
-    stage('Deploy') {
-      steps {
-        container('maven') {
-          sh 'echo "Deploy to kubernetes"'
-        }
-      }
-    }
-
-  }
 }
